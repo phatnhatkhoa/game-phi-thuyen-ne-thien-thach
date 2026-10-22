@@ -289,14 +289,94 @@
     score+=dt*(2+level);updateHUD();
   }
   function drawShip() {
-    ctx.save();ctx.translate(player.x,player.y);
-    if(player.invulnerable>0 && Math.floor(player.invulnerable*12)%2===0){ctx.globalAlpha=.45;}
-    if(player.shield>0){ctx.strokeStyle="#55f6ff";ctx.lineWidth=3;ctx.shadowBlur=18;ctx.shadowColor="#55f6ff";ctx.beginPath();ctx.arc(0,0,31+Math.sin(elapsed*8)*2,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;}
-    ctx.fillStyle="#ff9d58";ctx.beginPath();ctx.moveTo(-7,14);ctx.lineTo(0,31+Math.random()*6);ctx.lineTo(7,14);ctx.closePath();ctx.fill();
-    const g=ctx.createLinearGradient(-20,-20,20,20);g.addColorStop(0,"#f5ffff");g.addColorStop(.5,"#55f6ff");g.addColorStop(1,"#4370ff");
-    ctx.fillStyle=g;ctx.strokeStyle="#d8ffff";ctx.lineWidth=1.5;ctx.shadowBlur=14;ctx.shadowColor="#55f6ff";
-    ctx.beginPath();ctx.moveTo(0,-25);ctx.lineTo(20,15);ctx.lineTo(7,11);ctx.lineTo(0,17);ctx.lineTo(-7,11);ctx.lineTo(-20,15);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.shadowBlur=0;ctx.fillStyle="#15285a";ctx.beginPath();ctx.ellipse(0,-7,5,9,0,0,Math.PI*2);ctx.fill();
+    // Purple neon interceptor: dark metallic hull, magenta wings and violet core.
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    if (player.invulnerable > 0 && Math.floor(player.invulnerable * 12) % 2 === 0) ctx.globalAlpha = .45;
+
+    if (player.shield > 0) {
+      ctx.strokeStyle = "#bd72ff";
+      ctx.lineWidth = 3;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "#bd72ff";
+      ctx.beginPath();
+      ctx.arc(0, 0, 31 + Math.sin(elapsed * 8) * 2, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    // Twin purple engine flames
+    const flame = 20 + Math.random() * 10;
+    const flameGrad = ctx.createLinearGradient(0, 10, 0, flame + 16);
+    flameGrad.addColorStop(0, "#fff0ff");
+    flameGrad.addColorStop(.3, "#ff69ed");
+    flameGrad.addColorStop(1, "rgba(133, 55, 255, 0)");
+    ctx.fillStyle = flameGrad;
+    for (const ex of [-9, 9]) {
+      ctx.beginPath();
+      ctx.moveTo(ex - 4, 10);
+      ctx.lineTo(ex, flame + 14);
+      ctx.lineTo(ex + 4, 10);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Dark metallic, angular wings
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = "#b84dff";
+    const wingGrad = ctx.createLinearGradient(-22, -5, 22, 14);
+    wingGrad.addColorStop(0, "#34204f");
+    wingGrad.addColorStop(.5, "#a54dff");
+    wingGrad.addColorStop(1, "#2a1647");
+    ctx.fillStyle = wingGrad;
+    ctx.strokeStyle = "#f0b8ff";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(0, -24);
+    ctx.lineTo(12, -7);
+    ctx.lineTo(24, 13);
+    ctx.lineTo(10, 10);
+    ctx.lineTo(5, 17);
+    ctx.lineTo(-5, 17);
+    ctx.lineTo(-10, 10);
+    ctx.lineTo(-24, 13);
+    ctx.lineTo(-12, -7);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Central hull and glowing violet cockpit
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#171323";
+    ctx.strokeStyle = "#e0a6ff";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(0, -28);
+    ctx.lineTo(8, -5);
+    ctx.lineTo(5, 12);
+    ctx.lineTo(0, 16);
+    ctx.lineTo(-5, 12);
+    ctx.lineTo(-8, -5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#f4c8ff";
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = "#d36aff";
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 3.5, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Small magenta wing lights
+    ctx.fillStyle = "#ff83f1";
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#ff55df";
+    for (const lx of [-16, 16]) {
+      ctx.beginPath();
+      ctx.arc(lx, 8, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   }
   function drawAsteroid(a) {
@@ -345,10 +425,10 @@
     ctx.globalAlpha=1;
     for(const a of asteroids)drawAsteroid(a);
     for(const p of pickups)drawPickup(p);
-    for(const l of lasers){ctx.strokeStyle="#55f6ff";ctx.lineWidth=4;ctx.shadowBlur=14;ctx.shadowColor="#55f6ff";ctx.beginPath();ctx.moveTo(l.x,l.y+10);ctx.lineTo(l.x,l.y-9);ctx.stroke();ctx.shadowBlur=0;}
+    for(const l of lasers){ctx.strokeStyle="#e879ff";ctx.lineWidth=4;ctx.shadowBlur=14;ctx.shadowColor="#bf55ff";ctx.beginPath();ctx.moveTo(l.x,l.y+10);ctx.lineTo(l.x,l.y-9);ctx.stroke();ctx.shadowBlur=0;}
     if(state==="playing"||state==="paused")drawShip();
-    if(player.rapid>0 && state==="playing"){ctx.fillStyle="#ffb178";ctx.font="bold 13px system-ui";ctx.textAlign="center";ctx.fillText("RAPID FIRE",player.x,player.y+48);}
-    if(player.shield>0 && state==="playing"){ctx.fillStyle="#55f6ff";ctx.font="bold 13px system-ui";ctx.textAlign="center";ctx.fillText("SHIELD "+player.shield.toFixed(1)+"s",player.x,player.y+48);}
+    if(player.rapid>0 && state==="playing"){ctx.fillStyle="#ef91ff";ctx.font="bold 13px system-ui";ctx.textAlign="center";ctx.fillText("RAPID FIRE",player.x,player.y+48);}
+    if(player.shield>0 && state==="playing"){ctx.fillStyle="#d69aff";ctx.font="bold 13px system-ui";ctx.textAlign="center";ctx.fillText("SHIELD "+player.shield.toFixed(1)+"s",player.x,player.y+48);}
     if(flash>0){ctx.globalAlpha=flash*1.5;ctx.fillStyle="#c9f7ff";ctx.fillRect(0,0,W,H);ctx.globalAlpha=1;}
     ctx.restore();
   }
